@@ -1,0 +1,14 @@
+{
+  "master_barangay_list": [
+    "San Antonio", "Canlalay", "Biñan", "Dela Paz", "Langkiwa", 
+    "Ganado", "San Francisco", "Zapote", "Platero", "Sto. Domingo",
+    "Tubigan", "Casile", "San Jose", "Malaban", "Malamig",
+    "Bungahan", "Timbao", "Soro-soro", "Mamplasan", "Loma",
+    "Calabuso", "De La Paz", "Binan", "Casile"
+  ],
+  "status_data": [
+    { "barangay": "San Antonio", "status": "High", "water_level_cm": 150 },
+    { "barangay": "Canlalay", "status": "Moderate", "water_level_cm": 80 },
+    { "barangay": "Timbao", "status": "High", "water_level_cm": 700 }
+  ]
+}

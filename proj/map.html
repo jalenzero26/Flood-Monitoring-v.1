@@ -6,84 +6,110 @@
     <title>Biñan City Flood Status Tracker</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        :root { --primary-blue: #0038a8; --bg-grey: #eef2f5; }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f5; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Dashboard Layout Split */
-        .sidebar { width: 320px; background: white; padding: 25px 20px; box-shadow: 4px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 20px; z-index: 2000; }
-        #map { flex-grow: 1; height: 100vh; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-grey); height: 100vh; display: flex; flex-direction: column; }
 
-        /* Removes the browser focus box when a barangay is clicked */
-        .leaflet-interactive:focus {
-            outline: none !important;
-        }
+      /* Shared Navigation Bar */
+.navbar { 
+    background: var(--primary-blue); 
+    padding: 15px 20px; 
+    color: white; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
 
-        /* Typography & Labels */
-        h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #333; font-weight: 700; }
-        .section-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: #666; margin-bottom: 6px; display: block; }
+.navbar h2 { 
+    margin: 0; 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+}
+
+.nav-links a { 
+    color: white; 
+    margin-left: 20px; 
+    text-decoration: none; 
+    font-size: 0.9rem; 
+    opacity: 0.9; 
+}
+
+.nav-links a:hover { 
+    opacity: 1; 
+    text-decoration: underline; 
+}
+
+        /* Dashboard Layout */
+        .main-wrapper { display: flex; flex: 1; overflow: auto; padding: 20px; gap: 20px; }
         
-        /* Search Input Box & Floating Dropdown */
-        .search-container { position: relative; width: 100%; }
-        .search-input { width: 100%; padding: 12px 15px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; }
-        .search-input:focus { border-color: #0038a8; }
+        /* Sidebar Card */
+        .sidebar { width: 320px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 20px; }
+        #map { flex-grow: 1; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); will-change: transform; }
 
-        /* Auto-suggest Panel Styles */
-        .suggestions-box { 
-            position: absolute; top: 100%; left: 0; right: 0; 
-            background: white; border: 1px solid #bdc3c7; border-radius: 0 0 8px 8px; 
-            max-height: 200px; overflow-y: auto; z-index: 3000; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); display: none; 
-        }
+        /* Form Elements */
+        .section-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: #666; margin-bottom: 8px; display: block; }
+        .search-input, .filter-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; outline: none; }
+        
+        /* Buttons */
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-search { background-color: var(--primary-blue); }
+        .btn-reset { background-color: #7f8c8d; }
+
+        /* Status Box */
+        .status-box { background: #f8f9fa; border-left: 4px solid var(--primary-blue); padding: 15px; border-radius: 4px; font-size: 13px; color: #444; }
+        h3 { margin: 0 0 10px 0; font-size: 13px; color: #333; text-transform: uppercase; }
+
+        /* Auto-suggest Panel */
+        .suggestions-box { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 4px 4px; max-height: 200px; overflow-y: auto; z-index: 3000; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: none; }
         .suggestion-item { padding: 10px 15px; font-size: 14px; cursor: pointer; color: #333; }
-        .suggestion-item:hover { background-color: #f1f2f6; color: #0038a8; font-weight: 600; }
-        .suggestion-no-match { padding: 10px 15px; font-size: 13px; color: #95a5a6; font-style: italic; background: #fafafa; }
-
-        /* Dropdown Select Elements */
-        .filter-select { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 4px; background-color: #f8f9fa; font-size: 14px; color: #2f3640; outline: none; cursor: pointer; }
-
-        /* UI Action Buttons */
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; transition: background 0.2s; }
-        .btn-search { background-color: #0038a8; color: white; margin-top: 10px; }
-        .btn-search:hover { background-color: #002673; }
-        .btn-reset { background-color: #7f8c8d; color: white; }
-        .btn-reset:hover { background-color: #616a6b; }
-
-        /* Status view box */
-        .status-box { background: #f8f9fa; border-left: 4px solid #0038a8; padding: 12px; border-radius: 4px; font-size: 13px; line-height: 1.4; color: #444; }
+        .suggestion-item:hover { background-color: #f1f2f6; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <span class="section-label">Smart Search</span>
-            <div class="search-container">
-                <input type="text" id="barangaySearch" class="search-input" placeholder="Enter Barangay Name..." autocomplete="off">
-                <div id="suggestions" class="suggestions-box"></div>
+   <nav class="navbar">
+        <div class="logo">Flood Monitoring Dashboard</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="affected.html">Affected</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="map.html">Map</a>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="sidebar">
+            <div>
+                <span class="section-label">Smart Search</span>
+                <div class="search-container" style="position: relative;">
+                    <input type="text" id="barangaySearch" class="search-input" placeholder="Enter Barangay Name..." autocomplete="off">
+                    <div id="suggestions" class="suggestions-box"></div>
+                </div>
+            </div>
+
+            <div>
+                <span class="section-label">Filter By Flood Status</span>
+                <select id="floodFilter" class="filter-select">
+                    <option value="ALL">SHOW ALL BARANGAYS</option>
+                    <option value="CRITICAL">CRITICAL (> 250 cm)</option>
+                    <option value="HIGH">HIGH (181 - 250 cm)</option>
+                    <option value="MODERATE">MODERATE (101 - 180 cm)</option>
+                    <option value="SAFE">SAFE (0 - 100 cm)</option>
+                </select>
+            </div>
+
+            <button class="btn btn-search" id="btnAction">Apply Filter</button>
+            <button class="btn btn-reset" id="btnReset">Reset Map</button>
+
+            <div class="status-box">
+                <h3>Active View</h3>
+                <div id="hover-info" style="margin-top: 8px;">Hover over a barangay</div>
             </div>
         </div>
-
-        <div>
-            <span class="section-label">Filter By Flood Status</span>
-            <select id="floodFilter" class="filter-select">
-                <option value="ALL">SHOW ALL BARANGAYS</option>
-                <option value="CRITICAL">CRITICAL (&gt; 250 cm)</option>
-                <option value="HIGH">HIGH (181 - 250 cm)</option>
-                <option value="MODERATE">MODERATE (101 - 180 cm)</option>
-                <option value="SAFE">SAFE (0 - 100 cm)</option>
-            </select>
-        </div>
-
-        <button class="btn btn-search" id="btnAction">Apply Filter</button>
-        <button class="btn btn-reset" id="btnReset">Reset Map</button>
-
-        <div class="status-box">
-            <h3>Active View</h3>
-            <div id="hover-info" style="margin-top: 8px;">Hover over a barangay</div>
-        </div>
+        
+        <div id="map"></div>
     </div>
-    
-    <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>

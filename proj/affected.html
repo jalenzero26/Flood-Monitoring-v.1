@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Affected Barangays - Biñan City</title>
+    <style>
+        :root { 
+            --primary-blue: #0038a8; 
+            --card-bg: #ffffff; 
+            --border-color: #d1d5db; 
+            --text: #1f2937; 
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; }
+
+        /* Unified Navigation Bar */
+        .navbar { 
+            background: var(--primary-blue); 
+            padding: 15px 20px; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+
+        .navbar .logo { font-size: 1.1rem; font-weight: 600; }
+
+        .nav-links a { 
+            color: white; 
+            margin-left: 20px; 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            opacity: 0.9; 
+        }
+
+        .nav-links a:hover { opacity: 1; text-decoration: underline; }
+
+        /* Module Styling */
+        .dashboard-module { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            padding: 16px; 
+            max-width: 900px; 
+            margin: 20px auto; 
+        }
+
+        h2 { 
+            font-size: 1.1rem; 
+            border-bottom: 2px solid var(--primary-blue); 
+            padding-bottom: 8px; 
+            margin-top: 0; 
+            color: var(--primary-blue); 
+        }
+
+        /* Table Styling */
+        .affected-header { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            padding: 12px; 
+            background: var(--primary-blue); 
+            color: white; 
+            font-weight: bold; 
+            border-radius: 4px; 
+            margin-top: 10px;
+        }
+
+        .affected-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            padding: 12px; 
+            border-bottom: 1px solid #eee; 
+            align-items: center; 
+        }
+
+        /* Search Input */
+        #barangaySearch { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Flood Monitoring Dashboard</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="affected.html">Affected</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="map.html">Map</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-module">
+        <h2>City Status: Severity Report</h2>
+        
+        <input type="text" id="barangaySearch" placeholder="Search barangay..." onkeyup="filterTable()">
+
+        <div class="affected-header">
+            <span>Barangay</span>
+            <span>Status</span>
+            <span>Water Level</span>
+        </div>
+
+        <div id="affected-list-body">
+            <p id="loading-msg">Loading latest data...</p>
+        </div>
+        
+        <small id="last-updated">Last updated: 2026-07-08</small>
+    </div>
+
+    <script src="affected.js"></script>
+</body>
+</html>

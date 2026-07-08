@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biñan Flood Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary-blue: #0038a8; --bg: #f0f2f5; }
+        * { box-sizing: border-box; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
+
+        /* Navigation Bar */
+        .navbar { 
+            background: var(--primary-blue); 
+            padding: 15px 20px; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .navbar .logo { font-size: 1.1rem; font-weight: 600; }
+        .nav-links a { color: white; margin-left: 20px; text-decoration: none; font-size: 0.9rem; opacity: 0.9; }
+        .nav-links a:hover { opacity: 1; text-decoration: underline; }
+
+        /* Wrapper for Sidebar and Main Content */
+        .main-wrapper { display: flex; height: calc(100vh - 55px); overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 300px; background: white; border-right: 1px solid #d1d5db; padding: 25px; display: flex; flex-direction: column; gap: 20px; }
+        .sidebar h2 { color: var(--primary-blue); font-size: 1.2rem; margin-top: 0; border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; }
+        
+        .filter-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .section-label { font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; }
+        .filter-select, .search-input { padding: 12px; border: 1px solid #d1d5db; border-radius: 4px; width: 100%; font-size: 14px; height: 44px; outline: none; }
+
+        /* Search Overlay */
+        .search-container { position: relative; width: 100%; }
+        #suggestions { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #d1d5db; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 150px; overflow-y: auto; z-index: 1000; }
+        .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
+        .suggestion-item:hover { background: #f0f7ff; color: var(--primary-blue); }
+
+        /* Metrics & Content */
+        .main-content { flex-grow: 1; padding: 30px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .metric-card { background: white; padding: 20px; border-radius: 4px; border-left: 5px solid var(--primary-blue); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric-card h4 { margin: 0; color: #666; font-size: 0.75rem; text-transform: uppercase; }
+        .metric-card p { margin: 10px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #1f2937; }
+
+        .chart-container { background: white; padding: 25px; border-radius: 4px; height: 450px; border: 1px solid #d1d5db; }
+        #errorOverlay { display: none; color: #e11d48; padding: 20px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Flood Monitoring Dashboard</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="affected.html">Affected</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="map.html">Map</a>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <aside class="sidebar">
+            <h2>Analytics Controls</h2>
+            <a href="index.html" style="text-decoration:none; color: var(--primary-blue); font-weight:bold; margin-bottom: 10px; display: block;">&larr; Back to Dashboard</a>
+
+            <div class="filter-group">
+                <label class="section-label">Barangay</label>
+                <div class="search-container">
+                    <input type="text" id="barangaySearch" class="search-input" placeholder="Search name..." autocomplete="off">
+                    <div id="suggestions"></div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="section-label">Interval</label>
+                <select id="intervalSelect" class="filter-select">
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+
+            <div id="yearFilterGroup" class="filter-group">
+                <label class="section-label">Year</label>
+                <select id="yearSelect" class="filter-select">
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+
+            <div id="monthFilterGroup" class="filter-group">
+                <label class="section-label">Month</label>
+                <select id="monthSelect" class="filter-select">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <h1 id="analyticsTitle" style="color: var(--primary-blue);">Analytics: Default</h1>
+            
+            <div class="metrics-grid">
+                <div class="metric-card"><h4>Peak Level</h4><p id="metricPeak">--</p></div>
+                <div class="metric-card"><h4>Average Depth</h4><p id="metricAvg">--</p></div>
+                <div class="metric-card"><h4>Status</h4><p id="metricStatus">--</p></div>
+            </div>
+
+            <div class="chart-container">
+                <div id="errorOverlay">No data found for the selected criteria.</div>
+                <canvas id="floodChart"></canvas>
+            </div>
+        </main>
+    </div>
+
+    <script src="analytics.js"></script>
+</body>
+</html>

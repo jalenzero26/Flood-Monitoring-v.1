@@ -1,0 +1,46 @@
+{
+  "historical_baselines": {
+    "hourly": {
+      "labels": ["12:00 AM", "4:00 AM", "8:00 AM", "12:00 PM", "4:00 PM", "8:00 PM"],
+      "depths": [10, 45, 120, 240, 110, 35]
+    },
+    "daily": {
+      "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      "depths": [40, 55, 160, 210, 180, 95, 30]
+    },
+    "weekly": {
+      "labels": ["Week 1", "Week 2", "Week 3", "Week 4"],
+      "depths": [30, 95, 240, 110]
+    },
+    "monthly": {
+      "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "depths": [20, 15, 35, 70, 140, 260, 210, 185, 130, 90, 45, 25]
+    },
+    "yearly": {
+      "labels": ["2023", "2024", "2025", "2026"],
+      "depths": [145, 210, 280, 195]
+    }
+  },
+  "barangay_historical_data": {
+    "Default": {
+      "2026": {
+        "hourly": { "labels": ["12AM", "6AM", "12PM", "6PM"], "depths": [15, 35, 55, 20] },
+        "daily": { "labels": ["Mon", "Wed", "Fri"], "depths": [20, 45, 15] },
+        "weekly": { "labels": ["Wk 1", "Wk 2"], "depths": [25, 50] },
+        "monthly": { "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "depths": [10, 15, 20, 30, 50, 80, 110, 130, 90, 60, 30, 15] }
+      }
+    },
+    "Timbao": {
+      "2026": {
+        "hourly": { "labels": ["12AM", "4AM", "8AM", "12PM", "4PM", "8PM"], "depths": [55, 120, 215, 255, 180, 90] },
+        "daily": { "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], "depths": [40, 70, 160, 235, 195, 110, 50] },
+        "weekly": { "labels": ["Wk 1", "Wk 2", "Wk 3", "Wk 4"], "depths": [60, 150, 240, 95] },
+        "monthly": { "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "depths": [20, 25, 30, 55, 120, 210, 250, 265, 215, 140, 65, 25] }
+      }
+    }
+  },
+"Biñan": {
+    "status": "High", 
+    "current_impact_score": 85 
+	}
+}

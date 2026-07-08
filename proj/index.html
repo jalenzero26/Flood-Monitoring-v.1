@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biñan Flood Monitoring Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Flood Monitoring Dashboard</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="affected.html">Affected</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="map.html">Map</a>
+        </div>
+    </nav>
+
+    <main class="dashboard-grid">
+        <!-- Map Tile -->
+        <section class="dashboard-module">
+            <h2>Flood Hazard Map</h2>
+            <div id="map-placeholder" class="visual-box">Map Content Here</div>
+        </section>
+
+        <!-- Chart Tile -->
+        <section class="dashboard-module">
+            <h2>Trend Analysis</h2>
+            <div id="chart-placeholder" class="visual-box">Chart Content Here</div>
+        </section>
+
+        <!-- Severity Report Tile (Spans full width) -->
+        <section class="dashboard-module full-width">
+            <h2>City Status: Severity Report</h2>
+            <input type="text" id="barangaySearch" placeholder="Search..." onkeyup="filterTable()">
+            <div class="affected-header">
+                <span>Barangay</span><span>Status</span><span>Water Level</span>
+            </div>
+            <div id="affected-list-body"><p>Loading...</p></div>
+        </section>
+    </main>
+
+    <script src="affected.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+:root { 
+    --primary-blue: #0038a8; /* Updated theme color */
+    --card-bg: #ffffff; 
+    --border-color: #d1d5db; 
+    --text: #1f2937; 
+}
+
+body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; margin: 0; }
+
+/* Navigation Bar */
+.navbar { background: var(--primary-blue); padding: 15px 20px; color: white; display: flex; justify-content: space-between; }
+.nav-links a { color: white; margin-left: 20px; text-decoration: none; font-size: 0.9rem; }
+
+/* Dashboard Tiled Layout */
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
+.full-width { grid-column: span 2; }
+
+.dashboard-module { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; padding: 16px; }
+h2 { font-size: 1.1rem; border-bottom: 2px solid var(--primary-blue); padding-bottom: 8px; margin-top: 0; color: var(--primary-blue); }
+
+/* Severity Table Styles */
+.affected-header, .affected-row { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 12px; border-bottom: 1px solid #eee; }
+.affected-header { background: var(--primary-blue); color: white; font-weight: bold; border-radius: 4px; }
+
+/* Search Bar */
+#barangaySearch { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 4px; }
+#barangaySearch:focus { border-color: var(--primary-blue); outline: none; }
