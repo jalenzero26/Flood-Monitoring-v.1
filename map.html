@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hazard Map — Biñan Flood Monitoring</title>
+<meta name="description" content="Interactive flood hazard map of Biñan City with barangay-level search and severity filters.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-3.5 5-6 8.5-6 12a6 6 0 0 0 12 0c0-3.5-2.5-7-6-12Z"/></svg>
+    <span>Flood Monitoring Dashboard<span class="brand-sub">Biñan City · Laguna</span></span>
+  </div>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="affected.html">Affected</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="map.html" class="active">Map</a>
+  </div>
+</nav>
+
+<div class="page-container" style="max-width:1440px;">
+  <div class="breadcrumbs"><a href="index.html">Home</a> / <span>Hazard Map</span></div>
+
+  <div class="map-layout">
+    <aside class="map-sidebar">
+      <div>
+        <h1 style="font-size:1.1rem;margin-bottom:2px;">Hazard Map</h1>
+        <p class="page-subtitle" style="font-size:0.82rem;">Tap or search a barangay to inspect its flood depth.</p>
+      </div>
+
+      <div class="field" style="position:relative;">
+        <label class="field-label" for="barangaySearch">Smart Search</label>
+        <div class="input-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="barangaySearch" class="input" placeholder="Enter barangay name..." autocomplete="off">
+        </div>
+        <div id="suggestions" class="suggestions-box"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="floodFilter">Filter by Status</label>
+        <select id="floodFilter" class="select">
+          <option value="ALL">Show all barangays</option>
+          <option value="CRITICAL">Critical (&gt; 250 cm)</option>
+          <option value="HIGH">High (181–250 cm)</option>
+          <option value="MODERATE">Moderate (101–180 cm)</option>
+          <option value="SAFE">Safe (0–100 cm)</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary btn-block" id="btnAction">Apply Filter</button>
+        <button class="btn btn-ghost btn-block" id="btnReset">Reset</button>
+      </div>
+
+      <p class="results-count" id="resultsCount" style="margin:0;"></p>
+
+      <div class="status-box">
+        <h3>Active Selection</h3>
+        <div id="hover-info" style="margin-top:4px;">Hover or tap a barangay to see details.</div>
+      </div>
+
+      <div class="status-box">
+        <h3>Flood Status Legend</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span class="legend-swatch" style="background:var(--color-critical);"></span> Critical (&gt; 250 cm)</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="legend-swatch" style="background:var(--color-high);"></span> High (181–250 cm)</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="legend-swatch" style="background:var(--color-moderate);"></span> Moderate (101–180 cm)</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="legend-swatch" style="background:var(--color-safe);"></span> Safe (0–100 cm)</div>
+        </div>
+      </div>
+    </aside>
+
+    <div style="position:relative;flex:1;">
+      <div id="mapLoading" class="loading-overlay" style="position:absolute;inset:0;z-index:1000;background:rgba(255,255,255,0.85);border-radius:var(--radius-lg);">
+        <div class="spinner"></div><span>Loading barangay boundaries…</span>
+      </div>
+      <div id="map"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h5>Flood Monitoring Dashboard</h5>
+      <p>Interactive hazard mapping for faster, better-informed flood response across Biñan City.</p>
+    </div>
+    <div>
+      <h5>Navigate</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="affected.html">Severity Report</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Emergency</h5>
+      <ul>
+        <li>City DRRMO: (049) 511-1234</li>
+        <li>National Hotline: 911</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Biñan City Flood Monitoring Dashboard.</span></div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/common.js"></script>
+<script src="js/map.js"></script>
+</body>
+</html>

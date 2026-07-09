@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics — Biñan Flood Monitoring</title>
+<meta name="description" content="Explore historical water level trends per barangay in Biñan City — daily, monthly, and yearly views.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-3.5 5-6 8.5-6 12a6 6 0 0 0 12 0c0-3.5-2.5-7-6-12Z"/></svg>
+    <span>Flood Monitoring Dashboard<span class="brand-sub">Biñan City · Laguna</span></span>
+  </div>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="affected.html">Affected</a>
+    <a href="analytics.html" class="active">Analytics</a>
+    <a href="map.html">Map</a>
+  </div>
+</nav>
+
+<main class="page-container">
+  <div class="breadcrumbs"><a href="index.html">Home</a> / <span>Analytics</span></div>
+  <div class="page-header">
+    <div>
+      <h1 id="analyticsTitle">Analytics: City-Wide Default</h1>
+      <p class="page-subtitle">Historical water level trends per barangay and time interval.</p>
+    </div>
+  </div>
+
+  <div class="analytics-layout">
+    <aside class="map-sidebar">
+      <div class="field" style="position:relative;">
+        <label class="field-label" for="barangaySearch">Barangay</label>
+        <div class="input-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="barangaySearch" class="input" placeholder="Search or clear for city-wide..." autocomplete="off">
+        </div>
+        <div id="suggestions" class="suggestions-box"></div>
+        <span class="field-hint">Leave blank to view the city-wide average.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="intervalSelect">Interval</label>
+        <select id="intervalSelect" class="select">
+          <option value="daily">Daily (by hour)</option>
+          <option value="monthly" selected>Monthly (by day)</option>
+          <option value="yearly">Yearly (by month)</option>
+        </select>
+      </div>
+
+      <div class="status-box">
+        <h3>About this view</h3>
+        <p id="intervalDescription" style="margin:0;font-size:0.85rem;color:var(--text-muted);">Shows the past 30 days of water depth readings.</p>
+      </div>
+    </aside>
+
+    <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-5);min-width:0;">
+      <div class="stats-row" style="margin-bottom:0;">
+        <div class="stat-card">
+          <span class="stat-label">Peak Level</span>
+          <span class="stat-value" id="metricPeak">—</span>
+        </div>
+        <div class="stat-card accent">
+          <span class="stat-label">Average Depth</span>
+          <span class="stat-value" id="metricAvg">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Status</span>
+          <span class="stat-value" id="metricStatus" style="font-size:1.2rem;">—</span>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div id="chartLoading" class="loading-overlay"><div class="spinner"></div><span>Loading chart data…</span></div>
+        <div id="errorOverlay" class="empty-state" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <h3>No data found</h3>
+          <p>No historical records match the selected barangay and interval.</p>
+        </div>
+        <canvas id="floodChart" style="display:none;"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h5>Flood Monitoring Dashboard</h5>
+      <p>Historical trend analysis for smarter flood preparedness across Biñan City.</p>
+    </div>
+    <div>
+      <h5>Navigate</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="affected.html">Severity Report</a></li>
+        <li><a href="map.html">Hazard Map</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Emergency</h5>
+      <ul>
+        <li>City DRRMO: (049) 511-1234</li>
+        <li>National Hotline: 911</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Biñan City Flood Monitoring Dashboard.</span></div>
+</footer>
+
+<script src="js/common.js"></script>
+<script src="js/analytics.js"></script>
+</body>
+</html>

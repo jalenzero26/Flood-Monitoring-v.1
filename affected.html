@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Severity Report — Biñan Flood Monitoring</title>
+<meta name="description" content="Searchable, sortable list of flood severity and water levels for every barangay in Biñan City.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-3.5 5-6 8.5-6 12a6 6 0 0 0 12 0c0-3.5-2.5-7-6-12Z"/></svg>
+    <span>Flood Monitoring Dashboard<span class="brand-sub">Biñan City · Laguna</span></span>
+  </div>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="affected.html" class="active">Affected</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="map.html">Map</a>
+  </div>
+</nav>
+
+<main class="page-container">
+  <div class="breadcrumbs"><a href="index.html">Home</a> / <span>Severity Report</span></div>
+
+  <div class="page-header">
+    <div>
+      <h1>City Status: Severity Report</h1>
+      <p class="page-subtitle">Search, filter, and sort water levels for all 24 barangays.</p>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="table-toolbar">
+      <div class="input-icon-wrap" style="flex:1;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="barangaySearch" class="input" placeholder="Search barangay name...">
+      </div>
+      <select id="tierFilter" class="select" style="max-width:220px;">
+        <option value="ALL">All statuses</option>
+        <option value="CRITICAL">Critical (&gt; 250 cm)</option>
+        <option value="HIGH">High (181–250 cm)</option>
+        <option value="MODERATE">Moderate (101–180 cm)</option>
+        <option value="SAFE">Safe (0–100 cm)</option>
+      </select>
+    </div>
+
+    <p class="results-count" id="resultsCount"></p>
+
+    <div class="table-scroll">
+      <table class="data-table" id="affectedTable">
+        <thead>
+          <tr>
+            <th data-sort="barangay">Barangay <span class="sort-arrow">↕</span></th>
+            <th data-sort="status">Status <span class="sort-arrow">↕</span></th>
+            <th data-sort="water_level">Water Level <span class="sort-arrow">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="affected-list-body">
+          <tr><td colspan="3"><div class="skeleton-row"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div></td></tr>
+          <tr><td colspan="3"><div class="skeleton-row"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div></td></tr>
+          <tr><td colspan="3"><div class="skeleton-row"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <small id="last-updated" style="display:block;margin-top:var(--space-4);color:var(--text-faint);"></small>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h5>Flood Monitoring Dashboard</h5>
+      <p>An initiative to help residents and responders of Biñan City track flood conditions in real time.</p>
+    </div>
+    <div>
+      <h5>Navigate</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="map.html">Hazard Map</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Emergency</h5>
+      <ul>
+        <li>City DRRMO: (049) 511-1234</li>
+        <li>National Hotline: 911</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Biñan City Flood Monitoring Dashboard.</span>
+  </div>
+</footer>
+
+<script src="js/common.js"></script>
+<script src="js/affected.js"></script>
+</body>
+</html>

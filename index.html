@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biñan Flood Monitoring Dashboard — Home</title>
+<meta name="description" content="Real-time flood monitoring dashboard for Biñan City, Laguna. Track water levels, view the hazard map, and check barangay status.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-3.5 5-6 8.5-6 12a6 6 0 0 0 12 0c0-3.5-2.5-7-6-12Z"/></svg>
+    <span>Flood Monitoring Dashboard<span class="brand-sub">Biñan City · Laguna</span></span>
+  </div>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="affected.html">Affected</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="map.html">Map</a>
+  </div>
+</nav>
+
+<main class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1>City-Wide Flood Status</h1>
+      <p class="page-subtitle">Live water level snapshot across all 24 barangays of Biñan City.</p>
+    </div>
+    <a href="affected.html" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+      View Full Severity Report
+    </a>
+  </div>
+
+  <div id="alertBanner"></div>
+
+  <section class="stats-row" id="statsRow" aria-label="Summary statistics">
+    <div class="stat-card">
+      <span class="stat-label">Barangays Monitored</span>
+      <span class="stat-value">24</span>
+      <span class="stat-meta">Across Biñan City</span>
+    </div>
+    <div class="stat-card critical">
+      <span class="stat-label">Critical Alerts</span>
+      <span class="stat-value" id="statCritical">—</span>
+      <span class="stat-meta">Water level above 250 cm</span>
+    </div>
+    <div class="stat-card accent">
+      <span class="stat-label">Average Water Level</span>
+      <span class="stat-value" id="statAvg">—</span>
+      <span class="stat-meta">City-wide mean</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Last Updated</span>
+      <span class="stat-value" id="statUpdated" style="font-size:1.05rem;">—</span>
+      <span class="stat-meta">Auto-refreshed feed</span>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="card">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><path d="M9 3v15M15 6v15"/></svg>
+        Flood Hazard Map
+      </h2>
+      <div id="home-map" style="height:260px;border-radius:var(--radius-md);overflow:hidden;"></div>
+      <div style="margin-top:var(--space-4);display:flex;justify-content:flex-end;">
+        <a href="map.html" class="btn btn-ghost btn-sm">Open Full Map →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+        City-Wide Trend (This Month)
+      </h2>
+      <div style="height:260px;">
+        <canvas id="home-chart"></canvas>
+      </div>
+      <div style="margin-top:var(--space-4);display:flex;justify-content:flex-end;">
+        <a href="analytics.html" class="btn btn-ghost btn-sm">Open Full Analytics →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-links" style="margin:var(--space-6) 0;" aria-label="Quick actions">
+    <a class="quick-link-card" href="affected.html">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+      <h4>Severity Report</h4>
+      <p>Search and sort all barangays by current water level.</p>
+    </a>
+    <a class="quick-link-card" href="analytics.html">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18M7 16l4-6 3 4 5-8"/></svg></div>
+      <h4>Analytics</h4>
+      <p>Explore daily, monthly, and yearly water level trends.</p>
+    </a>
+    <a class="quick-link-card" href="map.html">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/></svg></div>
+      <h4>Hazard Map</h4>
+      <p>Visualize flood depth across the city boundary map.</p>
+    </a>
+    <a class="quick-link-card" href="tel:911">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg></div>
+      <h4>Emergency: 911</h4>
+      <p>Call for immediate rescue and emergency response.</p>
+    </a>
+  </section>
+
+  <section class="card full-width" style="margin-bottom:var(--space-6);">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L14.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      Most Affected Barangays
+    </h2>
+    <div class="table-scroll">
+      <table class="data-table" id="topAffectedTable">
+        <thead>
+          <tr><th>Rank</th><th>Barangay</th><th>Status</th><th>Water Level</th></tr>
+        </thead>
+        <tbody id="topAffectedBody">
+          <tr><td colspan="4"><div class="skeleton-block" style="height:44px;"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:var(--space-4);text-align:right;">
+      <a href="affected.html" class="btn btn-primary btn-sm">View All 24 Barangays →</a>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="card">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><path d="M9 11l2 2 4-4"/></svg>
+        Flood Safety Tips
+      </h2>
+      <ul class="simple-list">
+        <li>Move valuables and electrical appliances to higher ground before water rises.</li>
+        <li>Avoid walking or driving through moving flood water, even if it looks shallow.</li>
+        <li>Turn off electricity at the breaker if flooding is imminent in your home.</li>
+        <li>Keep a battery-powered radio and flashlight ready for power outages.</li>
+        <li>Follow evacuation orders from barangay officials without delay.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+        Emergency Contacts
+      </h2>
+      <div class="contact-item">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20L12 2z"/></svg></div>
+        <div><div class="contact-name">Biñan City DRRMO</div><div class="contact-detail">(049) 511-1234 · 24/7 hotline</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20L12 2z"/></svg></div>
+        <div><div class="contact-name">Bureau of Fire Protection</div><div class="contact-detail">(049) 511-5678</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20L12 2z"/></svg></div>
+        <div><div class="contact-name">Philippine Red Cross — Laguna</div><div class="contact-detail">143 · (049) 511-9012</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20L12 2z"/></svg></div>
+        <div><div class="contact-name">National Emergency Hotline</div><div class="contact-detail">911</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:var(--space-6);">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4M12 17h.01"/></svg>
+      Frequently Asked Questions
+    </h2>
+    <div class="faq-item open">
+      <button class="faq-question">How often is the flood data updated?
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer"><p>Water level readings are refreshed regularly from barangay-level monitoring stations across the city. The "Last Updated" timestamp on this page reflects the most recent sync.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">What do the flood status colors mean?
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer"><p>Green means Safe (0–100 cm), yellow/amber means Moderate (101–180 cm), orange means High (181–250 cm), and red means Critical (above 250 cm). These match the legend used on the map and severity report.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">My barangay isn't listed — what should I do?
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer"><p>Use the search bar on the Affected or Map page — it tolerates typos and alternate spellings (e.g. "Dela Paz" vs "De La Paz"). If it still isn't found, contact the City DRRMO directly using the numbers above.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h5>Flood Monitoring Dashboard</h5>
+      <p>An initiative to help residents and responders of Biñan City track flood conditions in real time and respond quickly during severe weather.</p>
+    </div>
+    <div>
+      <h5>Navigate</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="affected.html">Severity Report</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="map.html">Hazard Map</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Emergency</h5>
+      <ul>
+        <li>City DRRMO: (049) 511-1234</li>
+        <li>National Hotline: 911</li>
+        <li>Red Cross: 143</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Biñan City Flood Monitoring Dashboard. Data shown is for demonstration purposes.</span>
+    <span>Built for the residents of Biñan, Laguna.</span>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/common.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>
